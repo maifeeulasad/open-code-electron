@@ -35,8 +35,8 @@ export default function CodeEditor() {
   return (
     // eslint-disable-next-line react/jsx-filename-extension
     <Editor
-      height={window.innerHeight}
-      width={window.innerWidth}
+      height={window.innerHeight * 0.9}
+      width={window.innerWidth * 0.95}
       language="javascript"
       theme="dark"
       value="// write your code here"
