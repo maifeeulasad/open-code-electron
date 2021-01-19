@@ -98,6 +98,12 @@ const createWindow = async () => {
     mainWindow = null;
   });
 
+  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+  // @ts-ignore
+  mainWindow.webContents.on('file-command', () => {
+    console.log('file open request');
+  });
+
   const menuBuilder = new MenuBuilder(mainWindow);
   menuBuilder.buildMenu();
 
