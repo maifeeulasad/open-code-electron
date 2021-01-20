@@ -12,8 +12,8 @@ class TabWindow extends React.Component {
 
   constructor(props) {
     super(props);
-    ipcRenderer.on('file-res', (res) => {
-      console.log(res);
+    ipcRenderer.on('file-res', (e, args) => {
+      console.log(args);
     });
   }
 
