@@ -11,10 +11,12 @@
 import 'core-js/stable';
 import 'regenerator-runtime/runtime';
 import path from 'path';
-import { app, BrowserWindow, shell } from 'electron';
+import { app, BrowserWindow, shell, dialog } from 'electron';
 import { autoUpdater } from 'electron-updater';
 import log from 'electron-log';
 import MenuBuilder from './menu';
+
+const { ipcMain } = require('electron');
 
 export default class AppUpdater {
   constructor() {
@@ -98,10 +100,17 @@ const createWindow = async () => {
     mainWindow = null;
   });
 
-  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-  // @ts-ignore
-  mainWindow.webContents.on('file-command', () => {
-    console.log('file open request');
+  ipcMain.on('file-command', (event: any) => {
+    // eslint-disable-next-line promise/catch-or-return
+    dialog
+      .showOpenDialog({
+        properties: ['openFile', 'openDirectory', 'multiSelections'],
+      })
+      // eslint-disable-next-line promise/always-return
+      .then((files) => {
+        console.log(files);
+        event.sender.send('file-res', { files: files.filePaths });
+      });
   });
 
   const menuBuilder = new MenuBuilder(mainWindow);

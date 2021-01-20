@@ -10,6 +10,13 @@ class TabWindow extends React.Component {
     filenames: ['a', 'bb', 'ccc'],
   };
 
+  constructor(props) {
+    super(props);
+    ipcRenderer.on('file-res', (res) => {
+      console.log(res);
+    });
+  }
+
   renderTabs = () => {
     // eslint-disable-next-line react/destructuring-assignment
     return this.state.filenames.map((file) => {
