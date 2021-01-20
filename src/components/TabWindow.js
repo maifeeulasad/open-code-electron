@@ -10,6 +10,7 @@ class TabWindow extends React.Component {
   // eslint-disable-next-line react/state-in-constructor
   state = {
     filenames: [],
+    fileDirectory: '',
   };
 
   constructor(props) {
@@ -17,6 +18,9 @@ class TabWindow extends React.Component {
     // eslint-disable-next-line @typescript-eslint/no-this-alias
     const that = this;
     ipcRenderer.on('file-res', (e, args) => {
+      this.setState({
+        fileDirectory: args.files[0],
+      });
       fs.readdirSync(args.files[0]).forEach((file) => {
         this.setState({
           filenames: [...that.state.filenames, file],
@@ -31,14 +35,14 @@ class TabWindow extends React.Component {
       return (
         // eslint-disable-next-line react/jsx-filename-extension
         <Tab key={file} eventKey={file} title={file}>
-          <CodeEditor />
+          {/* eslint-disable-next-line react/destructuring-assignment */}
+          <CodeEditor directory={this.state.fileDirectory} file={file} />
         </Tab>
       );
     });
   };
 
   openFile = () => {
-    console.log('test');
     ipcRenderer.send('file-command', 'open');
   };
 

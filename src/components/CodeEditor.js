@@ -1,7 +1,8 @@
 import Editor, { loader } from '@monaco-editor/react';
-import React, { useRef, useState } from 'react';
+import React from 'react';
 
 const path = require('path');
+const fs = require('fs');
 
 function uriFromPath(_path) {
   let pathName = path.resolve(_path).replace(/\\/g, '/');
@@ -23,24 +24,42 @@ loader.config({
   },
 });
 
-export default function CodeEditor() {
-  const [isEditorReady, setIsEditorReady] = useState(false);
-  const valueGetter = useRef(null);
+class CodeEditor extends React.Component {
+  // eslint-disable-next-line react/state-in-constructor
+  state = {
+    // eslint-disable-next-line react/no-unused-state
+    content: '',
+  };
 
-  function handleEditorDidMount(_valueGetter) {
-    setIsEditorReady(true);
-    valueGetter.current = _valueGetter;
+  // eslint-disable-next-line react/sort-comp
+  readFile = () => {
+    fs.readFile(
+      // eslint-disable-next-line react/prop-types,react/destructuring-assignment
+      `${this.props.directory}/${this.props.file}`,
+      'UTF-8',
+      (err, res) => {
+        this.setState({ content: res });
+      }
+    );
+  };
+
+  componentDidMount() {
+    this.readFile();
   }
 
-  return (
-    // eslint-disable-next-line react/jsx-filename-extension
-    <Editor
-      height={window.innerHeight * 0.9}
-      width={window.innerWidth * 0.95}
-      language="javascript"
-      theme="dark"
-      value="// write your code here"
-      editorDidMount={handleEditorDidMount}
-    />
-  );
+  render() {
+    return (
+      // eslint-disable-next-line react/jsx-filename-extension
+      <Editor
+        height={window.innerHeight * 0.9}
+        width={window.innerWidth * 0.95}
+        language="javascript"
+        theme="dark"
+        // eslint-disable-next-line react/destructuring-assignment
+        value={this.state.content}
+      />
+    );
+  }
 }
+
+export default CodeEditor;
